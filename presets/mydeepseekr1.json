@@ -1,5 +1,5 @@
 {
-    "default_model": "model-00041-of-000163.safetensors",
+    "default_model": "model-pornworksNudePeoplePhoto_02.safetensors",
     "default_refiner": "None",
     "default_refiner_switch": 0.5,
     "default_loras": [
@@ -24,7 +24,7 @@
     "default_aspect_ratio": "1152*896",
     "default_overwrite_step": -1,
     "checkpoint_downloads": {
-        "model-00041-of-000163.safetensors": "https://huggingface.co/deepseek-ai/DeepSeek-R1-0528/resolve/main/model-00041-of-000163.safetensors"
+        "model-pornworksNudePeoplePhoto_02.safetensors": "https://huggingface.co/AI-Porn/pornworks-nude-people-photo-realistic-nsfw-flux-1d-checkpoint/resolve/main/pornworksNudePeoplePhoto_02.safetensors"
     },
     "embeddings_downloads": {},
     "lora_downloads": {},
