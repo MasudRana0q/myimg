@@ -34,6 +34,10 @@ args_parser.parser.add_argument("--disable-preset-download", action='store_true'
 args_parser.parser.add_argument("--always-download-new-model", action='store_true',
                                 help="Always download newer models ", default=False)
 
+# নতুন আর্গুমেন্ট যোগ করা হয়েছে যাতে শুধুমাত্র LoRA ডাউনলোড করা যায়
+args_parser.parser.add_argument("--only-download-loras", action='store_true',
+                                help="শুধুমাত্র LoRA মডেল ডাউনলোড করবে, অন্য সব বড় ফাইল বাদ দেবে (Colab এর জন্য উপযোগী)", default=False)
+
 args_parser.parser.set_defaults(
     disable_cuda_malloc=True,
     in_browser=True,
