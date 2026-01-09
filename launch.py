@@ -86,35 +86,43 @@ os.environ["U2NET_HOME"] = config.path_inpaint
 
 
 def download_models(default_model, previous_default_models, checkpoint_downloads, embeddings_downloads, lora_downloads):
-    for file_name, url in vae_approx_filenames:
-        load_file_from_url(url=url, model_dir=config.path_vae_approx, file_name=file_name)
+    # যদি শুধুমাত্র LoRA ডাউনলোডের অপশন সিলেক্ট করা থাকে, তবে বড় ফাইলগুলো বাদ দেওয়া হবে
+    if not args.only_download_loras:
+        for file_name, url in vae_approx_filenames:
+            load_file_from_url(url=url, model_dir=config.path_vae_approx, file_name=file_name)
 
-    load_file_from_url(
-        url='https://huggingface.co/lllyasviel/misc/resolve/main/fooocus_expansion.bin',
-        model_dir=config.path_fooocus_expansion,
-        file_name='pytorch_model.bin'
-    )
+        load_file_from_url(
+            url='https://huggingface.co/lllyasviel/misc/resolve/main/fooocus_expansion.bin',
+            model_dir=config.path_fooocus_expansion,
+            file_name='pytorch_model.bin'
+        )
+    else:
+        print('[DeFooocus] Skipping all non-LoRA downloads as requested.')
 
     if args.disable_preset_download:
         print('Skipped model download.')
         return
 
-    if not args.always_download_new_model:
-        if not os.path.exists(os.path.join(config.path_checkpoints, default_model)):
-            for alternative_model_name in previous_default_models:
-                if os.path.exists(os.path.join(config.path_checkpoints, alternative_model_name)):
-                    print(f'You do not have [{default_model}] but you have [{alternative_model_name}].')
-                    print(f'Fooocus will use [{alternative_model_name}] to avoid downloading new models, '
-                          f'but you are not using the latest models.')
-                    print('Use --always-download-new-model to avoid fallback and always get new models.')
-                    checkpoint_downloads = {}
-                    default_model = alternative_model_name
-                    break
+    # LoRA ছাড়া অন্য সব ফাইল ডাউনলোডের ক্ষেত্রে এই লজিক প্রযোজ্য
+    if not args.only_download_loras:
+        if not args.always_download_new_model:
+            if not os.path.exists(os.path.join(config.path_checkpoints, default_model)):
+                for alternative_model_name in previous_default_models:
+                    if os.path.exists(os.path.join(config.path_checkpoints, alternative_model_name)):
+                        print(f'You do not have [{default_model}] but you have [{alternative_model_name}].')
+                        print(f'Fooocus will use [{alternative_model_name}] to avoid downloading new models, '
+                              f'but you are not using the latest models.')
+                        print('Use --always-download-new-model to avoid fallback and always get new models.')
+                        checkpoint_downloads = {}
+                        default_model = alternative_model_name
+                        break
 
-    for file_name, url in checkpoint_downloads.items():
-        load_file_from_url(url=url, model_dir=config.path_checkpoints, file_name=file_name)
-    for file_name, url in embeddings_downloads.items():
-        load_file_from_url(url=url, model_dir=config.path_embeddings, file_name=file_name)
+        for file_name, url in checkpoint_downloads.items():
+            load_file_from_url(url=url, model_dir=config.path_checkpoints, file_name=file_name)
+        for file_name, url in embeddings_downloads.items():
+            load_file_from_url(url=url, model_dir=config.path_embeddings, file_name=file_name)
+    
+    # LoRA গুলো সব সময় ডাউনলোড হবে যদি প্রিসেটে থাকে
     for file_name, url in lora_downloads.items():
         load_file_from_url(url=url, model_dir=config.path_loras, file_name=file_name)
 
